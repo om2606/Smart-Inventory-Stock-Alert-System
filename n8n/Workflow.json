@@ -1,0 +1,309 @@
+{
+  "name": "Smart Inventory Stock Alert",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "85d58317-95fa-4928-88aa-ee70d21550fd",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "http://127.0.0.1:5000/products/low-stock",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        192,
+        0
+      ],
+      "id": "6a64071f-5c57-4f01-b6b2-918b647caedd",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "2459610d-ed8b-4592-8008-d9d98d8f8211",
+              "leftValue": "={{ $json.product_name }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "6fd25958-b200-4158-8d47-023c6a0f95cb",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d77a7097-257c-423c-8f72-4c3f5cd3b0e7",
+              "name": "alert_message",
+              "value": "=⚠️ LOW STOCK ALERT: {{ $json.product_name }} has only {{ $json.quantity }} units left. Minimum stock is {{ $json.minimum_stock }}.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        640,
+        -96
+      ],
+      "id": "21f91c5d-c723-4ec4-959d-98cc13dd2c5d",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "chatId": "your chat id",
+        "text": "{{ $('Edit Fields').item.json.alert_message }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1312,
+        -16
+      ],
+      "id": "telegram id",
+      "name": "Send a text message",
+      "webhookId": "your id",
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram id",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        192
+      ],
+      "id": "f56d67f1-a396-4808-b006-b1d90888a008",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5000/alerts",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "product_id",
+              "value": "={{ $('HTTP Request').item.json.id }}"
+            },
+            {
+              "name": "alert_message",
+              "value": "={{ $('Edit Fields').item.json.alert_message }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1536,
+        -16
+      ],
+      "id": "fb68bf46-e562-4778-bb19-b92d34666090",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "url": "=http://127.0.0.1:5000/alerts/{{ $('HTTP Request').item.json.id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        864,
+        -96
+      ],
+      "id": "fa8f9a3e-617f-47a9-825c-21f1b16970f1",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "88c678a3-326d-4519-b185-68cfb647cad6",
+              "leftValue": "={{ $json.alert_exists }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1088,
+        -96
+      ],
+      "id": "d226dc92-49f5-44e0-a742-56a64e0c95b6",
+      "name": "If1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "f3ccba06-5d88-43b6-98ed-ecac57d8111d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e0f495b6220d41c17185583a5f132153ca8dbce0b270a121f9b712295955eba3"
+  },
+  "nodeGroups": [],
+  "id": "1voICddHtxYoJUPn",
+  "tags": []
+}

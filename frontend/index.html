@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Inventory System</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <h1>📦 Smart Inventory Management</h1>
+    <p class="subtitle">
+    Track products, monitor stock levels, and manage inventory efficiently.
+    </p>
+
+    <h2 class="form-title">➕ Add New Product</h2>
+    <h2 class="section-title">📊 Inventory Overview</h2>
+    <div class="summary">
+
+    <div class="summary-card">
+        <div class="summary-icon">📦</div>
+        <h3>Total Products</h3>
+        <p id="totalProducts">0</p>
+    </div>
+
+    <div class="summary-card">
+        <div class="summary-icon">💰</div>
+        <h3>Inventory Value</h3>
+        <p id="inventoryValue">₹0</p>
+    </div>
+
+    <div class="summary-card">
+        <div class="summary-icon">⚠️</div>
+        <h3>Low Stock Products</h3>
+        <p id="lowStockProducts">0</p>
+    </div>
+
+    </div>
+
+    <form>
+
+        <label>Product Name</label>
+        <input type="text" placeholder="Enter product name" required>
+
+        <label>Category</label>
+        <input type="text" placeholder="Enter category" required>
+
+        <label>Quantity</label>
+        <input
+            type="number"
+            placeholder="Enter quantity"
+            min="0"
+            required
+        >
+
+        <label>Minimum Stock</label>
+        <input
+            type="number"
+            placeholder="Enter minimum stock"
+            min="0"
+            required
+        >
+
+        <label>Price</label>
+        <input
+            type="number"
+            placeholder="Enter price"
+            min="0"
+            required
+        >
+
+        <label>Supplier</label>
+        <input type="text" placeholder="Enter supplier" required>
+
+        <button type="submit">Add Product</button>
+        <p id="message"></p>
+
+        <h2 class="section-title">📋 Inventory List</h2>
+        <p id="productCount" class="product-count">Showing 0 products</p>
+        <div class="filter-bar">
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="🔍 Search product..."
+            >
+
+            <select id="categoryFilter">
+                <option value="">All Categories</option>
+            </select>
+
+            <select id="stockFilter">
+                <option value="">All Stock</option>
+                <option value="normal">🟢 Normal Stock</option>
+                <option value="low">🔴 Low Stock</option>
+            </select>
+
+        </div>
+
+        <button type="button" id="refreshButton">
+    🔄 Refresh Data
+</button>
+
+        <table border="1" id="productTable">
+
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Quantity</th>
+                <th>Minimum Stock</th>
+                <th>Price</th>
+                <th>Supplier</th>
+                <th>Action</th>
+                <th>Update Stock</th>
+            </tr>
+        </thead>
+
+        <tbody id="productList">
+        </tbody>
+
+        </table>
+
+    </form>
+<div id="productModal" class="modal">
+
+    <div class="modal-content">
+
+        <span id="closeModal" class="close">&times;</span>
+
+        <h2>Product Details</h2>
+
+        <div id="productDetails"></div>
+
+    </div>
+
+</div>
+<footer class="footer">
+    <p>📦 Smart Inventory & Stock Alert System</p>
+    <p>Built with Python, Flask, SQLite, Pandas & n8n</p>
+</footer>
+<script src="script.js"></script>
+</body>
+
+</html>
