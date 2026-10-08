@@ -37,25 +37,25 @@ This project allows users to manage products, monitor inventory levels, analyze 
 
 The main dashboard provides an overview of products, inventory value, and low-stock products.
 
-![Inventory Dashboard](screenshots/dashboard.png)
+![Inventory Dashboard](screenshots/Dashboard.png)
 
+---
 
+### 📋 Inventory List
 
-### ⚠️ Low Stock Monitoring
+The inventory table displays product details, stock levels, prices, suppliers, and available actions.
 
-The system highlights products that have reached or fallen below their minimum stock level.
+![Inventory List](screenshots/table%20of%20inventory%20list.png)
 
-![Low Stock Products](screenshots/low-stock.png)
-
-
+---
 
 ### 🤖 n8n Automation Workflow
 
 The n8n workflow automatically checks low-stock products and sends Telegram notifications.
 
-![n8n Workflow](screenshots/n8n-workflow.png)
+![n8n Workflow](screenshots/n8n%20workflow.png)
 
-
+---
 
 ## 🛠️ Technologies Used
 
